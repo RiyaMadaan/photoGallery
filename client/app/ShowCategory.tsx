@@ -8,8 +8,9 @@ import {
   Dimensions,
 } from "react-native";
 import { useRouter } from "expo-router";
+import SplashScreen from "./SplashScreen"; // Import your splash screen component
 
-export default function Index() {
+export default function ShowCategory() {
   const router = useRouter();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true); // State to manage loading
@@ -43,7 +44,10 @@ export default function Index() {
     </TouchableOpacity>
   );
 
-  
+  // Show the splash screen while loading
+  if (loading) {
+    return <SplashScreen />;
+  }
 
   return (
     <View style={styles.container}>
