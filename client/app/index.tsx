@@ -1,84 +1,19 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  FlatList,
-  Dimensions,
-} from "react-native";
-import { useRouter } from "expo-router";
+import { NavigationContainer } from "@react-navigation/native"; 
+import { createStackNavigator } from "@react-navigation/stack";
+import SplashScreen from "./SplashScreen";
+import HomeScreen from "./HomeScreen";
+import ShowImages from "./show-images";
 
-export default function Index() {
-  const router = useRouter();
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true); // State to manage loading
+const Stack = createStackNavigator();
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch("http://192.168.0.107:3000/categories");
-        const data = await response.json();
-        setCategories(data);
-      } catch (error) {
-        console.error("Failed to fetch categories:", error);
-      } finally {
-        setLoading(false); // Set loading to false after fetching
-      }
-    };
-
-    fetchCategories();
-  }, []);
-
-  const handlePress = (category) => {
-    router.push({ pathname: "/show-images", params: { category } });
-  };
-
-  const renderCategory = ({ item }) => (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={() => handlePress(item.title)}
-    >
-      <Text style={styles.cardText}>{item.title}</Text>
-    </TouchableOpacity>
-  );
-
-  
-
+export default function App() {
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={categories}
-        renderItem={renderCategory}
-        keyExtractor={(item) => item.id.toString()}
-        numColumns={2} // Set 2 cards per row
-        contentContainerStyle={styles.flatListContainer}
-      />
-    </View>
+    <NavigationContainer independent={true}>
+      <Stack.Navigator initialRouteName="SplashScreen">
+        <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="ShowImages" component={ShowImages} options={{ headerShown: false }}/>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    justifyContent: "center",
-  },
-  flatListContainer: {
-    paddingHorizontal: 10,
-  },
-  card: {
-    flex: 1,
-    margin: 10,
-    height: 100,
-    backgroundColor: "#f2f2f2",
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 4,
-  },
-  cardText: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});

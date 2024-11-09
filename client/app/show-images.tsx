@@ -1,22 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { View, Image, StyleSheet, FlatList, Dimensions, TouchableOpacity } from "react-native";
-import { useRoute } from "@react-navigation/native"; 
-import { useRouter } from "expo-router"; 
-import { useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 
 export default function ShowImages() {
-  const route = useRoute();
   const router = useRouter();
-  const navigation = useNavigation();
-  const { category } = route.params;
+
+  const category  = router.query; // Use the query param for category
   
   const [photos, setPhotos] = useState([]);
 
   useEffect(() => {
-    navigation.setOptions({
-      title: category || "Images",
-    });
-
     const fetchImagesByCategory = async () => {
       try {
         let url = `http://192.168.0.107:3000/`;
@@ -41,15 +34,7 @@ export default function ShowImages() {
         }
   
         const response = await fetch(url);
-  
-        // Log the response
-        console.log("Response Status:", response.status);
-        console.log("Response Headers:", response.headers);
-  
         const data = await response.json();
-  
-        // Log the data
-        console.log("Fetched Data:", data);
         setPhotos(data);
      } catch (error) {
         console.error("Failed to fetch photos:", error);
@@ -60,7 +45,7 @@ export default function ShowImages() {
   }, [category]);
 
   const handleImagePress = (uri) => {
-    router.push({ pathname: "/image-detail", params: { uri } });
+    router.push(`/image-detail?uri=${uri}`); // Use URL query parameters
   };
 
   const renderItem = ({ item }) => (

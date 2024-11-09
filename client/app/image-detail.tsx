@@ -1,44 +1,16 @@
-import React from "react";
-import { View, Image, StyleSheet } from "react-native";
-import { useRoute } from "@react-navigation/native"; // Import useRoute from React Navigation
-import {
-  PinchGestureHandler,
-  GestureHandlerRootView,
-} from "react-native-gesture-handler";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  withSpring,
-} from "react-native-reanimated";
+import React from 'react';
+import { View, Image, StyleSheet, Text } from 'react-native';
+import { useRouter } from "expo-router";
+
 export default function ImageDetail() {
-  const route = useRoute();
-  const { uri } = route.params;
-  const scale = useSharedValue(1);
+  const router = useRouter();
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
-
-  const onPinchGestureEvent = (event) => {
-    scale.value = withSpring(event.nativeEvent.scale);
-  };
-
-  const onPinchGestureEnd = () => {
-    scale.value = withTiming(1); // Reset to original size on release
-  };
-
+  const uri  = router.query; // Use the query param for category
+    
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <PinchGestureHandler
-        onGestureEvent={onPinchGestureEvent}
-        onEnded={onPinchGestureEnd}
-      >
-        <Animated.View style={[styles.container, animatedStyle]}>
-          <Image source={{ uri }} style={styles.image} resizeMode="contain" />
-        </Animated.View>
-      </PinchGestureHandler>
-    </GestureHandlerRootView>
+    <View style={styles.container}>
+      <Image source={{ uri }} style={styles.image} />
+    </View>
   );
 }
 
@@ -48,11 +20,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-    paddingHorizontal:20,
-    
+  },
+  text: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
   image: {
-    width: '100%',
-    height: '100%',
+    width: 300,
+    height: 300,
+    borderRadius: 10,
   },
 });
